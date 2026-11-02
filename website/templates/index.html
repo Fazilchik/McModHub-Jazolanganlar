@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>McModHub | Jazolanganlar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">MC<span>MOD</span>HUB</div>
+    <div class="header-label">JAZOLANGANLAR</div>
+</header>
+
+<main class="container">
+    <section class="hero">
+        <div class="tag">MODERATION SYSTEM</div>
+        <h1>Guruh <span>intizomi</span></h1>
+        <p>McModHub tizimidagi jazolar va moderatsiya tarixi.</p>
+    </section>
+
+    <section class="stats">
+        <div class="stat-card">
+            <small>JAMI JAZOLAR</small>
+            <strong>{{ stats.total or 0 }}</strong>
+        </div>
+        <div class="stat-card warn">
+            <small>WARN</small>
+            <strong>{{ stats.warns or 0 }}</strong>
+        </div>
+        <div class="stat-card mute">
+            <small>MUTE</small>
+            <strong>{{ stats.mutes or 0 }}</strong>
+        </div>
+        <div class="stat-card ban">
+            <small>BAN</small>
+            <strong>{{ stats.bans or 0 }}</strong>
+        </div>
+    </section>
+
+    <section class="records">
+        <div class="section-heading">
+            <h2>Jazo <span>tarixi</span></h2>
+            <span class="live">● LIVE DATABASE</span>
+        </div>
+
+        <form method="GET" class="filters">
+            <input
+                type="text"
+                name="q"
+                placeholder="Username yoki ID..."
+                value="{{ search }}"
+            >
+
+            <select name="type">
+                <option value="">Barcha jazolar</option>
+                {% for item in ['WARN', 'MUTE', 'BAN', 'UNBAN', 'UNMUTE', 'UNWARN'] %}
+                <option value="{{ item }}" {% if selected_type == item %}selected{% endif %}>
+                    {{ item }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Qidirish</button>
+        </form>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>FOYDALANUVCHI</th>
+                        <th>JAZO</th>
+                        <th>SABAB</th>
+                        <th>MUDDAT</th>
+                        <th>ADMIN</th>
+                        <th>SANA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in records %}
+                    <tr>
+                        <td>
+                            <strong>{{ item.full_name or 'Noma’lum' }}</strong>
+                            <small>
+                                {% if item.username %}@{{ item.username }}{% else %}ID: {{ item.user_id }}{% endif %}
+                            </small>
+                        </td>
+                        <td>
+                            <span class="badge {{ item.punishment_type|lower }}">
+                                {{ item.punishment_type }}
+                            </span>
+                        </td>
+                        <td>{{ item.reason or 'Ko‘rsatilmagan' }}</td>
+                        <td>{{ item.duration or '—' }}</td>
+                        <td>{{ item.admin_name or 'Noma’lum' }}</td>
+                        <td>{{ item.created_at }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="empty">
+                            Hozircha jazo tarixi mavjud emas.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <strong>McModHub</strong> | Jazolanganlar tizimi
+        <span>Admini — Fazilchik</span>
+    </footer>
+</main>
+
+</body>
+</html>
